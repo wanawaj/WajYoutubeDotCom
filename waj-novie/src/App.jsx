@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './app.css';
+import Dashboard from './dashboard.jsx';
 
 function MailIcon() {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>;
@@ -15,6 +16,7 @@ function UserIcon() {
 
 export default function App() {
   const [mode, setMode] = useState('login');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', remember: true });
   const [message, setMessage] = useState('');
@@ -62,10 +64,12 @@ export default function App() {
       return;
     }
 
-    setMessageType('success');
-    setMessage(isSignup
-      ? `You're all set, ${form.name.trim()}! This demo form is ready to connect to your signup API.`
-      : 'Form validated! Connect this demo to your login API to authenticate your account.');
+    // Demo-only navigation: connect a real authentication API before production use.
+    setIsAuthenticated(true);
+  }
+
+  if (isAuthenticated) {
+    return <Dashboard userName={form.name.trim() || form.email.split('@')[0] || 'Jamie'} onLogout={() => { setIsAuthenticated(false); setMessage(''); setMode('login'); }} />;
   }
 
   return (
